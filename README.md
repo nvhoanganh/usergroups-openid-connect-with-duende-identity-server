@@ -367,12 +367,36 @@ dotnet add package Duende.IdentityServer.EntityFramework
 	"AllowedHosts": "*"
 }
 ```
-
--   now inject `IConfiguration` into startup.cs class of the IDS
--   remove InMemory providers with the following:
+-   Add the required dependency using statements to startup.cs
 
 ```csharp
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using Microsoft.Extensions.Configuration;
+```
+
+-   now inject `IConfiguration` into startup.cs class of the IDS
+
+```csharp
+public IConfiguration Configuration { get; }
+
+public Startup(IConfiguration configuration)
+{
+	Configuration = configuration;
+}
+```
+
+-Add the connection string and migration assembly to ConfigureServices()
+
+```csharp
+var connectStr = Configuration.GetConnectionString("DefaultConnection");
+
 var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+```
+
+-   replace the InMemory providers on the services.AddIdentityServer() command with the following:
+
+```csharp
 services.AddIdentityServer()
   .AddConfigurationStore(options =>
   {
@@ -393,6 +417,8 @@ services.AddIdentityServer()
 ```
 
 -   where `connectStr` is coming from `Configuration.GetConnectionString("DefaultConnection")`
+-   Stop running the ids-server application
+-   If you do not have it already then install the Entity Framework Core tools CLI at https://docs.microsoft.com/en-us/ef/core/cli/dotnet
 -   then run `dotnet ef migrations add InitialIdsMigration -c PersistedGrantDbContext` to add Initial Migration
 -   you will see the initial migration code for the database which is creating 3 tables
 -   now run `dotnet ef database update -c PersistedGrantDbContext` to create the DB file
@@ -403,11 +429,13 @@ services.AddIdentityServer()
 -   now run `dotnet run` again and open https://localhost:5001/.well-known/openid-configuration again
 -   you should see it is empty again (no scopes, no clients)
 
-## Step 7: Setup data seeder class
+## Step 7: Setup data seeder class in the ids-server project
 
 - add new file `.\Data\SeedData.cs` like this
 
 ```csharp
+using System;
+
 public class DataSeeder
 {
     public static void SeedIdentityServer(IServiceProvider serviceProvider)
@@ -417,7 +445,14 @@ public class DataSeeder
 }
 ```
 
-- modify program.cs file like this
+-add dependency using statements to program.cs
+
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+```
+
+- modify the main method of program.cs like this
 
 ```csharp
 public static void Main(string[] args)
