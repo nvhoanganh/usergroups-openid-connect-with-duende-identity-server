@@ -57,6 +57,12 @@ dotnet new webapi
 
 ## Step 3: protect weatherapi
 
+-   Add the Jwt Bearer package
+
+```bash
+dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer
+```
+
 -   add `services.AddAuthentication("Bearer")` and `app.UseAuthentication()` to startup.cs and `[Authorize]` on the `WeatherForecastController.cs`
 
 ```csharp
@@ -157,7 +163,7 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
 ```
 
--   Add test user
+-   Add test user to the end of services.AddIdentityServer()
 
 ```csharp
 
@@ -231,6 +237,14 @@ npx create-react-app react-client
 cd react-client
 npm i oidc-client react-router-dom
 ```
+-   import the required components and libraries for the changes we are going to make to App.js
+
+```jsx
+// App.js >idsImportComponentsAndLibraries
+import React, { useState, useEffect } from "react";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { UserManager } from "oidc-client";
+```
 
 -   replace content of `App()` function with the following
 
@@ -259,7 +273,7 @@ const IDENTITY_CONFIG = {
 	redirect_uri: "http://localhost:3000/signin-oidc",
 	post_logout_redirect_uri: "http://localhost:3000",
 	response_type: "code",
-	scope: "openid weatherapi",
+	scope: "openid profile weatherapi.read",
 };
 
 function HomePage() {
@@ -318,6 +332,7 @@ function Callback() {
 }
 ```
 
+-   run `npm start`
 -   open http://localhost:3000, click on `Login` button
 -   login with `alice` and `alice`
 -   you should be redirected back to the React app with your name and weather information
