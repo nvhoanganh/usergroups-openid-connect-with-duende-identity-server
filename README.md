@@ -602,7 +602,21 @@ dotnet add package Duende.IdentityServer.AspNetIdentity --version 5.1.0
 dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore --version 5.0.5
 ```
 
-- in the `startup.cs` file, add the following before UseIdentityServer() method
+- add new file `.\Data\ApplicationDbContext.cs` like this
+
+```csharp
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+
+public class ApplicationDbContext : IdentityDbContext
+{
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+	}
+}
+```
+
+- in the `startup.cs` file, add the following before the .AddIdentityServer() method
 
 ```csharp
 services.AddDbContext<ApplicationDbContext>(options =>
@@ -621,9 +635,19 @@ dotnet ef migrations add InitialIdsMigration -c ApplicationDbContext
 dotnet ef database update -c ApplicationDbContext
 ```
 
-- update `SeedData.cs` and add new method to seed the test users
+- add using statements to `SeedData.cs` 
 
 ```csharp
+using IdentityModel;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+```
+
+- Modify the `SeedData.cs` SeedIdentityServer method to look this this
+
+```csharp
+using 
+
 public static void SeedIdentityServer(IServiceProvider serviceProvider)
 {
     Console.WriteLine("Seeding data for Identity server");
@@ -638,7 +662,11 @@ public static void SeedIdentityServer(IServiceProvider serviceProvider)
 
     DataSeeder.SeedTestUsers(userMng);
 }
+```
 
+- Modify `SeedData.cs` by adding a new method to seed the test users
+
+```csharp
 private static void SeedTestUsers(UserManager<IdentityUser> manager)
 {
     var alice = manager.FindByNameAsync("alice").Result;
