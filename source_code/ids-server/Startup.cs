@@ -27,10 +27,10 @@ namespace idsserver
 
             var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseSqlite(connectStr, opt => opt.MigrationsAssembly(migrationAssembly));
-            });
+            // services.AddDbContext<ApplicationDbContext>(options =>
+            // {
+            //     options.UseSqlite(connectStr, opt => opt.MigrationsAssembly(migrationAssembly));
+            // });
 
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
@@ -45,7 +45,11 @@ namespace idsserver
                 options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
-            }).AddEntityFrameworkStores<ApplicationDbContext>();
+            })
+            .AddUserStore<InMemoryUserStoreBlank<IdentityUser>>()
+            .AddRoleStore<RoleStoreEmpty<IdentityRole>>();
+
+            // .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer(options =>
             {
@@ -113,8 +117,8 @@ namespace idsserver
 
                 if (env.IsDevelopment())
                 {
-                    // spa.UseAngularCliServer(npmScript: "start");
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    spa.UseAngularCliServer(npmScript: "start");
+                    // spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
                 }
             });
         }
