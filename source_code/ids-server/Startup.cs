@@ -46,10 +46,9 @@ namespace idsserver
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
             })
-            .AddUserStore<InMemoryUserStoreBlank<IdentityUser>>()
-            .AddRoleStore<RoleStoreEmpty<IdentityRole>>();
-
-            // .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddUserStore<InMemoryUserStore<IdentityUser>>()
+            .AddRoleStore<RoleStoreEmpty<IdentityRole>>()
+            .AddDefaultTokenProviders();
 
             services.AddIdentityServer(options =>
             {

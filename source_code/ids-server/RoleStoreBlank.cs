@@ -30,7 +30,7 @@ namespace idsserver
 
         public void Dispose()
         {
-            throw new System.NotImplementedException();
+            // throw new System.NotImplementedException();
         }
 
         public Task<TRole> FindByIdAsync(string roleId, CancellationToken cancellationToken)
