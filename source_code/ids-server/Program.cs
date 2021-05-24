@@ -20,6 +20,9 @@ namespace idsserver
 
             using (var serviceScope = host.Services.CreateScope())
             {
+                var customDbContext = serviceScope.ServiceProvider.GetService<MysqlApplicationDbContext>();
+                customDbContext.Database.Migrate();
+
                 var persistentdbContext = serviceScope.ServiceProvider.GetService<PersistedGrantDbContext>();
                 persistentdbContext.Database.Migrate();
 

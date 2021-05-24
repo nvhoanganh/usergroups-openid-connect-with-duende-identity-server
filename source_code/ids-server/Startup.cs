@@ -33,7 +33,7 @@ namespace idsserver
                 options.UseSqlite(connectStr, opt => opt.MigrationsAssembly(migrationAssembly));
             });
 
-            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            services.AddIdentity<UserAuth, ApplicationRole>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
                 options.SignIn.RequireConfirmedEmail = false;
@@ -47,9 +47,8 @@ namespace idsserver
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
             })
-            // .AddUserStore<InMemoryUserStore<IdentityUser>>()
-            .AddUserStore<MySqlUserStore<IdentityUser>>()
-            .AddRoleStore<RoleStoreEmpty<IdentityRole>>()
+            .AddUserStore<MySqlUserStore<UserAuth>>()
+            .AddRoleStore<RoleStoreEmpty<ApplicationRole>>()
             .AddDefaultTokenProviders();
 
             services.AddIdentityServer(options =>
@@ -66,8 +65,8 @@ namespace idsserver
                 .AddOperationalStore(options =>
                 {
                     options.ConfigureDbContext = builder => builder.UseSqlite(connectStr, opt => opt.MigrationsAssembly(migrationAssembly));
-                })
-                .AddAspNetIdentity<IdentityUser>();
+                });
+            // .AddAspNetIdentity<UserAuth>();
 
             // add views
             var mvcBuilder = services.AddControllersWithViews();

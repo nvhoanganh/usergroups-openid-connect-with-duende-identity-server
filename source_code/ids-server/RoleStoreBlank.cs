@@ -9,7 +9,7 @@ namespace idsserver
 {
     public class RoleStoreEmpty<TRole> : IQueryableRoleStore<TRole>,
           IRoleClaimStore<TRole>
-          where TRole : IdentityRole
+          where TRole : ApplicationRole
     {
         public IQueryable<TRole> Roles => throw new System.NotImplementedException();
 

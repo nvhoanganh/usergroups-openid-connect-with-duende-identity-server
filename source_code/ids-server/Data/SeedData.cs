@@ -21,23 +21,22 @@ namespace idsserver
                 .GetRequiredService<ConfigurationDbContext>();
 
             var userMng = serviceProvider
-                .GetRequiredService<UserManager<IdentityUser>>();
+                .GetRequiredService<UserManager<UserAuth>>();
 
             DataSeeder.SeedData(context);
 
             DataSeeder.SeedTestUsers(userMng);
         }
 
-        private static void SeedTestUsers(UserManager<IdentityUser> manager)
+        private static void SeedTestUsers(UserManager<UserAuth> manager)
         {
             var alice = manager.FindByNameAsync("alice").Result;
             if (alice == null)
             {
-                alice = new IdentityUser
+                alice = new UserAuth
                 {
                     UserName = "alice",
                     Email = "alice@test.com",
-                    EmailConfirmed = true,
                 };
                 var result = manager.CreateAsync(alice, "alice").Result;
 
@@ -50,12 +49,12 @@ namespace idsserver
                         new Claim(JwtClaimTypes.WebSite, "Website"),
                     }).Result;
 
-                    Console.WriteLine("added alice user");
+                    Console.WriteLine("added alice user:" + alice.UserAuthId);
                 }
             }
             else
             {
-                Console.WriteLine("alice already created");
+                Console.WriteLine("alice already created:" + alice.UserAuthId);
             }
         }
         private static void SeedData(ConfigurationDbContext context)
