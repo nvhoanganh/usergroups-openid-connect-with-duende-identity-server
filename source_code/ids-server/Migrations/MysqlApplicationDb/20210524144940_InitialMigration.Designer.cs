@@ -8,7 +8,7 @@ using idsserver;
 namespace idsserver.Migrations.MysqlApplicationDb
 {
     [DbContext(typeof(MysqlApplicationDbContext))]
-    [Migration("20210524141710_InitialMigration")]
+    [Migration("20210524144940_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,9 +22,6 @@ namespace idsserver.Migrations.MysqlApplicationDb
                     b.Property<string>("UserAuthId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("AuthenticationType")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("DisplayName")
                         .HasColumnType("TEXT");
 
@@ -35,12 +32,6 @@ namespace idsserver.Migrations.MysqlApplicationDb
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("HashedPassword")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsAuthenticated")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TwoFaToken")

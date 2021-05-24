@@ -16,10 +16,7 @@ namespace idsserver.Migrations.MysqlApplicationDb
                     DisplayName = table.Column<string>(type: "TEXT", nullable: true),
                     HashedPassword = table.Column<string>(type: "TEXT", nullable: true),
                     Has2Fa = table.Column<bool>(type: "INTEGER", nullable: false),
-                    TwoFaToken = table.Column<string>(type: "TEXT", nullable: true),
-                    AuthenticationType = table.Column<string>(type: "TEXT", nullable: true),
-                    IsAuthenticated = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: true)
+                    TwoFaToken = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {

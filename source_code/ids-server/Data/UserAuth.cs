@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace idsserver
 {
-    public class UserAuth : IIdentity
+    public class UserAuth
     {
         // this is the ID field
         public string UserAuthId { get; set; } = Guid.NewGuid().ToString();
@@ -14,9 +14,6 @@ namespace idsserver
         public string HashedPassword { get; set; }
         public bool Has2Fa { get; set; }
         public string TwoFaToken { get; set; }
-        public string AuthenticationType { get; set; }
-        public bool IsAuthenticated { get; set; }
-        public string Name { get; set; }
     }
 
     public class ApplicationRole
