@@ -50,6 +50,8 @@ namespace idsserver
 
             if (user != null && await _manager.CheckPasswordSignInAsync(user, model.Password, true) == Microsoft.AspNetCore.Identity.SignInResult.Success)
             {
+                Console.WriteLine($"user logged in successfully");
+                
                 await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.UserAuthId, user.UserName, clientId: context?.Client.ClientId));
 
                 // only set explicit expiration here if user chooses "remember me". 

@@ -65,8 +65,8 @@ namespace idsserver
                 .AddOperationalStore(options =>
                 {
                     options.ConfigureDbContext = builder => builder.UseSqlite(connectStr, opt => opt.MigrationsAssembly(migrationAssembly));
-                });
-            // .AddAspNetIdentity<UserAuth>();
+                })
+            .AddAspNetIdentity<UserAuth>();
 
             // add views
             var mvcBuilder = services.AddControllersWithViews();
