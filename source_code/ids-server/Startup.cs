@@ -27,6 +27,8 @@ namespace idsserver
 
             var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
+            services.AddScoped<IPasswordHasher<UserAuth>, StupidPasswordHasher>();
+
             // use custom backing DB for the user stores
             services.AddDbContext<MysqlApplicationDbContext>(options =>
             {
