@@ -27,10 +27,11 @@ namespace idsserver
 
             var migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
-            // services.AddDbContext<ApplicationDbContext>(options =>
-            // {
-            //     options.UseSqlite(connectStr, opt => opt.MigrationsAssembly(migrationAssembly));
-            // });
+            // use custom backing DB for the user stores
+            services.AddDbContext<MysqlApplicationDbContext>(options =>
+            {
+                options.UseSqlite(connectStr, opt => opt.MigrationsAssembly(migrationAssembly));
+            });
 
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
@@ -46,7 +47,8 @@ namespace idsserver
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
             })
-            .AddUserStore<InMemoryUserStore<IdentityUser>>()
+            // .AddUserStore<InMemoryUserStore<IdentityUser>>()
+            .AddUserStore<MySqlUserStore<IdentityUser>>()
             .AddRoleStore<RoleStoreEmpty<IdentityRole>>()
             .AddDefaultTokenProviders();
 
