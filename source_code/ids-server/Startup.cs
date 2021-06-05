@@ -1,18 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
-using Duende.IdentityServer.Models;
-using Duende.IdentityServer.Test;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
+using System;
 
 namespace idsserver
 {
@@ -38,9 +33,31 @@ namespace idsserver
                 options.UseSqlite(connectStr, opt => opt.MigrationsAssembly(migrationAssembly));
             });
 
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
 
-            services.AddIdentityServer()
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+                options.Lockout.MaxFailedAccessAttempts = 3;
+
+                // for testing
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 3;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
+            services.AddIdentityServer(options =>
+            {
+                // login page is now on the Angular SPA
+                options.UserInteraction.LoginUrl = "~/";
+            })
                 // add Configuration DB context 
                 // dotnet ef migrations add InitialIdsMigration -c PersistedGrantDbContext
                 .AddConfigurationStore(options =>
@@ -54,11 +71,20 @@ namespace idsserver
                 .AddAspNetIdentity<IdentityUser>();
 
             // add views
-            services.AddControllersWithViews();
+            var mvcBuilder = services.AddControllersWithViews();
 
+            // auto rebuild the razor files
+#if DEBUG
+            mvcBuilder.AddRazorRuntimeCompilation();
+#endif
             // add CORS
             services.AddCors();
 
+            // add static angular
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,6 +108,21 @@ namespace idsserver
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
+
+            // use spa
+            app.UseSpa(spa =>
+            {
+                // To learn more about options for serving an Angular SPA from ASP.NET Core,
+                // see https://go.microsoft.com/fwlink/?linkid=864501
+
+                spa.Options.SourcePath = "ClientApp";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseAngularCliServer(npmScript: "start");
+                    // spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                }
+            });
         }
     }
 }
