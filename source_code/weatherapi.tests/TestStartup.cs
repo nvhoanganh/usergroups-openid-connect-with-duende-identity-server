@@ -1,11 +1,12 @@
+using API.Tests.PactSetup;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using weatherapi;
 
-namespace weatherapi.tests
+namespace API.Tests
 {
-    public class TestStartup : Startup
+    public class TestStartup : Startup // this is the real WebAPI startup
     {
         public TestStartup(IConfiguration configuration) : base(configuration)
         {
@@ -17,5 +18,4 @@ namespace weatherapi.tests
             base.Configure(app, webHost);
         }
     }
-
 }

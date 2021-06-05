@@ -7,14 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using PactNet.Infrastructure.Outputters;
-using Xunit.Abstractions;
 
-namespace weatherapi.tests
+namespace API.Tests.PactSetup
 {
     public class ProviderStateMiddleware
     {
-        private const string ConsumerName = "Weather API Consumer";
+        private const string ConsumerName = "Consumer1";
         private readonly RequestDelegate _next;
         private readonly IDictionary<string, Action> _providerStates;
 
@@ -39,7 +37,7 @@ namespace weatherapi.tests
         {
             if (context.Request.Path.Value == "/provider-states")
             {
-                context.Response.StatusCode = (int)HttpStatusCode.OK;
+                context.Response.StatusCode = (int) HttpStatusCode.OK;
 
                 if (context.Request.Method == HttpMethod.Post.ToString() &&
                     context.Request.Body != null)
@@ -74,20 +72,5 @@ namespace weatherapi.tests
     {
         public string Consumer { get; set; }
         public string State { get; set; }
-    }
-
-    public class XUnitOutput : IOutput
-    {
-        private readonly ITestOutputHelper _output;
-
-        public XUnitOutput(ITestOutputHelper output)
-        {
-            _output = output;
-        }
-
-        public void WriteLine(string line)
-        {
-            _output.WriteLine(line);
-        }
     }
 }
