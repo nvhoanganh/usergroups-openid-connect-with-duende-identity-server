@@ -1,9 +1,14 @@
+using System;
 using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using weatherapi.Controllers;
 
@@ -26,10 +31,22 @@ namespace weatherapi
                 .AddJwtBearer("Bearer", options =>
                 {
                     options.Audience = "weatherapi";
-                    options.Authority = "https://localhost:5001";
+                    var issuer = Configuration.GetValue<string>("IDSServer");
 
-                    // ignore self-signed ssl 
-                    options.BackchannelHttpHandler = new HttpClientHandler { ServerCertificateCustomValidationCallback = delegate { return true; } };
+                    if (issuer.StartsWith("http"))
+                        options.Authority = issuer; // Issued by identity server
+                    else
+                    {
+                        // this is self issued
+                        var signKey = Configuration.GetValue<string>("IssuerSigningKey");
+
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signKey)),
+                            ValidateIssuer = true,
+                            ValidIssuer = issuer,
+                        };
+                    }
                 });
 
             services.AddControllers()
@@ -66,7 +83,7 @@ namespace weatherapi
 
             app.UseRouting();
 
-            // app.UseAuthentication();
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

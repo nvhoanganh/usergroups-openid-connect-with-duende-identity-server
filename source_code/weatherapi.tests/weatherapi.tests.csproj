@@ -22,4 +22,9 @@
   <ItemGroup>
     <ProjectReference Include="..\weatherapi\weatherapi.csproj" />
   </ItemGroup>
+  <ItemGroup>
+   <None Update="appsettings.Pact.json">
+     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+   </None>
+</ItemGroup>
 </Project>

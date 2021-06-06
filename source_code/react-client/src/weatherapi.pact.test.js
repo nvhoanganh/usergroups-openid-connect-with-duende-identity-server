@@ -1,4 +1,3 @@
-import { Pact } from "@pact-foundation/pact-node/src/pact";
 import { pactWith } from "jest-pact";
 import { Matchers } from "@pact-foundation/pact";
 import { WeatherAPI } from "./weatherapi.service";
