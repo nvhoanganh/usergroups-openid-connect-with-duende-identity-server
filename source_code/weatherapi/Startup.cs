@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using weatherapi.Controllers;
 
 namespace weatherapi
 {
@@ -31,7 +32,10 @@ namespace weatherapi
                     options.BackchannelHttpHandler = new HttpClientHandler { ServerCertificateCustomValidationCallback = delegate { return true; } };
                 });
 
-            services.AddControllers();
+            services.AddControllers()
+                // see https://github.com/ddubson/contract-testing-dotnetcore-example#-gotchas
+                .AddApplicationPart(typeof(WeatherForecastController).Assembly);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "weatherapi", Version = "v1" });
@@ -62,7 +66,7 @@ namespace weatherapi
 
             app.UseRouting();
 
-            app.UseAuthentication();
+            // app.UseAuthentication();
             app.UseAuthorization();
 
 
