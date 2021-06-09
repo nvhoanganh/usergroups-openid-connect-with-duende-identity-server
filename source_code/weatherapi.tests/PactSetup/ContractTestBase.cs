@@ -26,9 +26,6 @@ namespace API.Tests.PactSetup
                 .AddJsonFile("appsettings.Pact.json")
                 .Build();
 
-            Console.WriteLine($"token is {config.GetValue<string>("PactServerToken")}");
-            Console.WriteLine($"server is {config.GetValue<string>("PactServer")}");
-
             this.Configuration = config;
             this.PactFlowServerUrl = config.GetValue<string>("PactServer");
             this.PactFlowServer = new PactUriOptions(config.GetValue<string>("PactServerToken"));
