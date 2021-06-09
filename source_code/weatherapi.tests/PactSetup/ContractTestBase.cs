@@ -20,18 +20,27 @@ namespace API.Tests.PactSetup
         protected readonly IConfiguration Configuration;
         protected readonly string PactFlowServerUrl;
 
-        protected ContractTestBase(ITestOutputHelper output, IConfiguration configuration)
+        protected ContractTestBase(ITestOutputHelper output)
         {
-            this.Configuration = configuration;
-            this.PactFlowServerUrl = configuration.GetValue<string>("PactServer");
-            this.PactFlowServer = new PactUriOptions(configuration.GetValue<string>("PactServerToken"));
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.Pact.json")
+                .Build();
+
+            Console.WriteLine($"token is {config.GetValue<string>("PactServerToken")}");
+            Console.WriteLine($"server is {config.GetValue<string>("PactServer")}");
+
+            this.Configuration = config;
+            this.PactFlowServerUrl = config.GetValue<string>("PactServer");
+            this.PactFlowServer = new PactUriOptions(config.GetValue<string>("PactServerToken"));
+
+
             _output = output;
             _webHost = WebHost.CreateDefaultBuilder()
                 .ConfigureAppConfiguration((hostingContext, configuration) =>
                 {
                     configuration.Sources.Clear();
                     // overwrite with his config
-                    configuration.AddJsonFile("appsettings.Development.json");
+                    configuration.AddJsonFile("appsettings.Pact.json", false);
                 })
                 .UseStartup<TestStartup>()
                 .UseKestrel()

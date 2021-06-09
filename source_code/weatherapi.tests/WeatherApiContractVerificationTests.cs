@@ -9,7 +9,7 @@ namespace API.Tests
 {
     public class WeatherApiContractVerificationTests : ContractTestBase
     {
-        public WeatherApiContractVerificationTests(ITestOutputHelper output, IConfiguration config) : base(output, config)
+        public WeatherApiContractVerificationTests(ITestOutputHelper output) : base(output)
         {
         }
 

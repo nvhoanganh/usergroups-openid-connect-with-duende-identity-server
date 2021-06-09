@@ -25,10 +25,7 @@
           {
             "temperatureC": 3,
             "temperatureF": 30,
-            "summary": "hot",
-            "area": "CA",
-            "country": "CA",
-            "state": "CA"
+            "summary": "hot"
           }
         ],
         "matchingRules": {
