@@ -16,17 +16,22 @@ namespace API.Tests.PactSetup
         private bool _disposedValue;
         private readonly ITestOutputHelper _output;
         private readonly IWebHost _webHost;
+        protected readonly PactUriOptions PactFlowServer;
+        protected readonly IConfiguration Configuration;
+        protected readonly string PactFlowServerUrl;
 
-        protected ContractTestBase(ITestOutputHelper output)
+        protected ContractTestBase(ITestOutputHelper output, IConfiguration configuration)
         {
+            this.Configuration = configuration;
+            this.PactFlowServerUrl = configuration.GetValue<string>("PactServer");
+            this.PactFlowServer = new PactUriOptions(configuration.GetValue<string>("PactServerToken"));
             _output = output;
             _webHost = WebHost.CreateDefaultBuilder()
                 .ConfigureAppConfiguration((hostingContext, configuration) =>
                 {
                     configuration.Sources.Clear();
                     // overwrite with his config
-                    configuration
-                        .AddJsonFile("appsettings.Pact.json");
+                    configuration.AddJsonFile("appsettings.Development.json");
                 })
                 .UseStartup<TestStartup>()
                 .UseKestrel()
