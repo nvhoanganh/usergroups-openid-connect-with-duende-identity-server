@@ -18,7 +18,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:pact": "react-scripts test --CI --runInBand --detectOpenHandles",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "pact-publish": "node publish-pact.js",
+    "can-i-deploy": "node can-i-deploy.js"
   },
   "eslintConfig": {
     "extends": [

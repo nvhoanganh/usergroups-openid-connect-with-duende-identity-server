@@ -50,10 +50,13 @@ namespace API.Tests.PactSetup
                     // you can generate long live token from here http://jwtbuilder.jamiekurtz.com
                     // or you can generate one yourself, make sure the expiry is not to far in the future
                     {"Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwYWN0dGVzdCIsImlhdCI6MTYyMjk1ODIxMSwiZXhwIjoxNzQ5MTg4NjExLCJhdWQiOiJ3ZWF0aGVyYXBpIiwic3ViIjoidGVzdCJ9.YdjgDJClh1dsDRFPKOpdDF_C6hXJSV_AEYONVopjnhA"}
-                }, 
+                },
 
                 //sends to the provider
-                Verbose = true //Output verbose verification logs to the test output
+                Verbose = true, //Output verbose verification logs to the test output
+                // the version of this provider, can come from GIT SHA
+                ProviderVersion = "1.0.4",
+                PublishVerificationResults = true
             };
         }
 
